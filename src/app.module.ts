@@ -8,6 +8,9 @@ import { Payment } from './payment/entities/payment.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 
+import { MailService } from './services/mail.service';
+
+
 @Module({
   imports: [BookingModule, PaymentModule,
     ConfigModule.forRoot(),
@@ -20,10 +23,21 @@ import { AuthModule } from './auth/auth.module';
     database: process.env.DB_NAME,
    // entities: [Payment],
     autoLoadEntities: true,
-    synchronize: true,
+    synchronize: true,//make it false and use migration 
   }),
-    AuthModule,],
+  
+    AuthModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [ 
+   /*
+   // Apply Roles Guard Globally
+    {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  },*/
+  AppService, MailService,],
+  
+ 
 })
 export class AppModule {}
