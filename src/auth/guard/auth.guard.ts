@@ -9,7 +9,7 @@ import {
   import { Observable } from 'rxjs';
   import { Request } from 'express';
   
-  @Injectable()
+  //@Injectable()
   export class AuthGuard implements CanActivate {
     constructor(private jwtService: JwtService) {}
   

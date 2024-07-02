@@ -8,6 +8,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
+import { PdfService } from 'src/services/pdf.service';
 
 @Module({
   imports:[TypeOrmModule.forFeature([Payment]), 
@@ -16,7 +17,9 @@ import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
     signOptions: { expiresIn: process.env.EXPIRES_IN },
   }),],
   controllers: [PaymentController],
-  providers: [PaymentService,JwtStrategy
+  providers: [PaymentService,
+    JwtStrategy, 
+    PdfService
    /* {
       provide: APP_GUARD,
       useClass: RolesGuard,

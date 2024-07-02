@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { MoreThanOrEqual, Repository } from 'typeorm';
@@ -10,6 +10,8 @@ import { RefreshToken } from './entities/refresh-token.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { Role } from './enums/role.enum';
 import {MailService} from '../services/mail.service';
+import { PdfService } from 'src/services/pdf.service';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +23,7 @@ export class AuthService {
         private refreshTokenRepository: Repository<RefreshToken>,
 
         private emailService : MailService,
+        private pdfService: PdfService,
     ){}
 
     async singup(signupDto: SignupDto,  roles: Role[] = [Role.Admin]): Promise<User>
@@ -144,25 +147,48 @@ export class AuthService {
       
     }
 
-     /* async validateUser(credentials: SigninDto): Promise<any> {
-        const { email, password } = credentials;
-        const user =  await this.userRepository.findOneBy({
-            email,
-        })
-        if(!user){
-            throw new UnauthorizedException('this email is not associated with any account');
-        }
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if(!passwordMatch){
-                throw new UnauthorizedException('Password incorrect');
-        } 
-        if(!user.isActive){
-            throw new UnauthorizedException('Your account is Blocked');
-        } 
-        console.log('User validated successfully');
-        
-        return user;
-      }*/
+   /* async generatePDF() {
+      console.log("zzzz");
+      const students = [
+        { name: 'John Doe', age: 25 },
+        { name: 'Jane Smith', age: 22 },
+        { name: 'Bob Johnson', age: 30 },
+      ];
+      const filePath = 'C:/Users/Taoufik/Documents/students.pdf';
+  
+      this.pdfService.generateStudentListPDF(students, filePath);
+    }*/
 
-   
+  /*async generatePDF() {
+    
+    console.log("zzzz");
+    const students = [
+      { name: 'John Doe', age: 25 },
+      { name: 'Jane Smith', age: 22 },
+      { name: 'Bob Johnson', age: 30 },
+    ];
+    return await this.pdfService.generateStudentListPDF(students);
+  }
+
+  */
+
+  
+ /* async getUsersPdf( ) {
+    const users = await this.findAll();
+      const filePath = await this.pdfService.generatePdfStream(users);
+      return filePath;
+  }*/
+
+      
+    
+      async usersListPdf() {
+        const users = await this.findAll();
+        const pdfBuffer = await this.pdfService.getUsersListPdf(users);
+        return pdfBuffer;
+       
+      }
+
+      async findAll(): Promise<User[]> {
+        return this.userRepository.find();
+      }
 }

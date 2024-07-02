@@ -8,6 +8,7 @@ import { RefreshToken } from './entities/refresh-token.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { MailService } from 'src/services/mail.service';
+import { PdfService } from 'src/services/pdf.service';
 //import { JwtStrategy } from './strategies/jwt.strategy';
 //import { JwtStrategy } from './jwt.strategy';
 
@@ -27,7 +28,7 @@ import { MailService } from 'src/services/mail.service';
     }),
 ],
   controllers: [AuthController],
-  providers: [AuthService, MailService
+  providers: [AuthService, MailService, PdfService
    // JwtStrategy, LocalStrategy
   ], // LocalStrategy,JwtStrategy
 //exports: [AuthService,],// PassportModule, JwtModule

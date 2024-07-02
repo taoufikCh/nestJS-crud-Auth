@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { Payment } from './entities/payment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';;
+import { Repository } from 'typeorm';
+import { PdfService } from 'src/services/pdf.service';
+//import { Response } from 'supertest';
+import { Response } from 'express';
 
 @Injectable()
 export class PaymentService {
@@ -11,6 +14,7 @@ export class PaymentService {
   constructor(
     @InjectRepository(Payment)
     private paymentRepository: Repository<Payment>,
+    private pdfService: PdfService,
   ) {}
 
   async create(createPaymentDto: CreatePaymentDto) {
@@ -50,8 +54,36 @@ export class PaymentService {
     return res;
   }
 
- 
+  async getPaymentListPdf(@Res() res) {
+  
+   
+  }
+  
+  /*async generatePDF() {
+    console.log("zzzz");
+    const students = [
+      { name: 'John Doe', age: 25 },
+      { name: 'Jane Smith', age: 22 },
+      { name: 'Bob Johnson', age: 30 },
+    ];
+    const filePath = 'C:/Users/Taoufik/Documents/students.pdf';
 
+    this.pdfService.generateStudentListPDF(students, filePath);
+  }*/
+
+ 
+   /* async getStudentsPdf( ) {
+      const filePath = await this.pdfService.generatePdfStream(this.getMockStudents());
+      return filePath;
+  }*/
+
+  private getMockStudents() {
+      return [
+          { id: 1, name: 'John Doe', age: 20, grade: 'A' },
+          { id: 2, name: 'Jane Doe', age: 22, grade: 'B' },
+          { id: 3, name: 'Jim Beam', age: 21, grade: 'C' },
+      ];
+  }
   
 
  

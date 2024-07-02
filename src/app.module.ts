@@ -5,28 +5,56 @@ import { BookingModule } from './booking/booking.module';
 import { PaymentModule } from './payment/payment.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Payment } from './payment/entities/payment.entity';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService  } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 
 import { MailService } from './services/mail.service';
+import { PdfService } from './services/pdf.service';
 
 
 @Module({
   imports: [BookingModule, PaymentModule,
     ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-    type: process.env.DB_TYPE as any,
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT, 10),
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-   // entities: [Payment],
+    /*TypeOrmModule.forRoot({
+    type: process.env.POSTGRES_TYPE as any,
+    host: process.env.POSTGRES_HOST,
+    port: parseInt(process.env.POSTGRES_PORT, 10),
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DATABASE,
+    entities: [Payment],
     autoLoadEntities: true,
     synchronize: true,//make it false and use migration 
-  }),
+  }),*/
+  ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        console.log('DB Config:', {
+          type: configService.get<string>('POSTGRES_TYPE'),
+          host: configService.get<string>('POSTGRES_HOST'),
+          port: configService.get<number>('POSTGRES_PORT'),
+          username: configService.get<string>('POSTGRES_USER'),
+          password: configService.get<string>('POSTGRES_PASSWORD'),
+          database: configService.get<string>('POSTGRES_DATABASE'),
+        });
+        return {
+          type: configService.get<string>('POSTGRES_TYPE') as any,
+          host: configService.get<string>('POSTGRES_HOST'),
+          port: configService.get<number>('POSTGRES_PORT'),
+          username: configService.get<string>('POSTGRES_USER'),
+          password: configService.get<string>('POSTGRES_PASSWORD'),
+          database: configService.get<string>('POSTGRES_DATABASE'),
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+      },
+    }),
   
     AuthModule,
+    
+    
   ],
   controllers: [AppController],
   providers: [ 
@@ -36,7 +64,7 @@ import { MailService } from './services/mail.service';
     provide: APP_GUARD,
     useClass: RolesGuard,
   },*/
-  AppService, MailService,],
+  AppService, MailService, PdfService,],
   
  
 })

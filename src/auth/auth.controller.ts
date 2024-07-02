@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards, Request, Res, HttpStatus, Put } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Request, Res, HttpStatus, Put, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dtos/signup.dto';
 import { SigninDto } from './dtos/signin.dto';
@@ -7,6 +7,8 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { ChangePasswordDto } from './dtos/change-password.dto';
 import { AuthGuard } from './guard/auth.guard';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { Response } from 'express';
+import * as fs from 'fs';
 //import { LocalAuthGuard } from './guard/local-auth.guard';
 //import { AuthGuard } from '@nestjs/passport';
 
@@ -64,5 +66,58 @@ export class AuthController {
     //return { message: 'A new password has been sent to your email.' };
     return { message: 'If this user exists, A new password will be sent to your email' };
   }
+
+  /*@Get('pdf')
+  async generatePdf(@Res() res: Response) {
+    
+    
+    console.log("ici")
+    const pdfBuffer = await this.authService.generatePDF();
+  
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename=example.pdf',
+      'Content-Length': pdfBuffer.length,
+    })
+
+    res.end(pdfBuffer);
+    //return res;
+  }*/
+  /*@Get('pdf2')
+  async getStudentsPdf(@Res() res: Response) {
+    const pdfStream = await this.authService.getUsersPdf();
+    //res.download( filePath);
+    
+        
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'inline; filename=ListUsers.pdf',
+        });
+
+        pdfStream.pipe(res);
+
+  }*/
+        @Get('pdf2')
+        async getUsersListPdf(@Res() res: Response) {
+          
+          const pdfBuffer = await this.authService.usersListPdf();
+      
+         /* res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename=payment-list.pdf',
+            'Content-Length': pdfBuffer.length,
+          });*/
+       //res.end(pdfBuffer);
+          res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'inline; filename=payment-list.pdf',
+            'Content-Length': pdfBuffer.length,
+          });
+      
+          res.end(pdfBuffer);
+        }
+
+
 
 }
